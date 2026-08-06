@@ -1,96 +1,60 @@
 import streamlit as st
-
-from modules.charts.historical_price_chart import plot_historical_price
-from modules.kpis.stock_explorer_kpis import compute_stock_explorer_kpis
-from modules.utils.spacer import spacer
-from modules.utils.no_data_warning import show_no_stock_data_warning
+from components.page_title import render_page_title
+from components.company_details import render_company_details
+from components.kpis import render_kpis_one_row
+from components.one_plot_container import render_one_plot_container
+from components.historical_price_grid import render_historical_grid
 from components.footer import render_footer
+from components.spacer import spacer
+from modules.kpis.company_data import (
+    prepare_company_data,
+    prepare_company_kpi_cards
+)
+from modules.charts.historical_price_chart import render_historical_price
+from modules.grids.historical_grid_processing import prepare_historical_grid
 
 
-def stock_explorer(stock_df, stock_kpis):
+company_dataframe = st.session_state.get("company_df")
+stock_dataframe = st.session_state.get("stock_df")
 
-    st.title("📊 Stock Explorer")
+if any(
+    x is None
+    for x in (
+        company_dataframe,
+        stock_dataframe,
+    )
+):
+    st.warning(
+        "Stock data or date range is unavailable. Please select a ticker first."
+    )
+    st.stop()
 
-    spacer(1)
-
-    # =========================================================
-    # COMPANY HEADER
-    # =========================================================
-    company = stock_kpis["company"]
-
-    st.header(f"{company['name']} ({company['ticker']})")
-    st.caption(f"{company['sector']} • {company['industry']}")
+company_data = prepare_company_data(company_dataframe)
 
 
-    spacer(2)
+def render_stock_explorer():
 
-    # =========================================================
-    # KEY METRICS
-    # =========================================================
+    render_page_title("📊 Stock Explorer")
 
-    col1, col2, col3, col4 = st.columns(4, border=True)
+    render_company_details(company_data["company"])
 
-    with col1:
-        st.metric(
-            "Market Cap",
-            stock_kpis["market_cap"],
-        )
-
-    with col2:
-        st.metric(
-            "P/E Ratio",
-            stock_kpis["trailing_pe"]
-        )
-
-    with col3:
-        st.metric(
-            "Dividend Yield",
-            stock_kpis["dividend"],
-        )
-
-    with col4:
-        st.metric(
-            "Beta",
-            stock_kpis["beta"],
-        )
+    render_kpis_one_row(prepare_company_kpi_cards(company_data))
 
     spacer(2)
 
-    # =========================================================
-    # PRICE CHART
-    # =========================================================
-
-    st.subheader("Historical Price")
-
-    if stock_df.empty:
-        show_no_stock_data_warning()
-    else:
-        plot_historical_price(stock_df)
+    render_one_plot_container(
+        "Historical Price",
+        render_historical_price(stock_dataframe)
+    )
 
     spacer(2)
 
-    # =========================================================
-    # PRICE TABLE
-    # =========================================================
-
-    with st.expander("Historical Price Data"):
-        if stock_df.empty:
-            show_no_stock_data_warning()
-        else:
-            st.dataframe(
-                stock_df.drop(columns='ticker'),
-                width='stretch',
-                hide_index=True,
-            )
+    render_historical_grid(
+        prepare_historical_grid(stock_dataframe)
+    )
 
     render_footer()
 
 
 
-company_data = st.session_state.company_df
-stock_data = st.session_state.stock_df
-
-stock_explorer_kpis = compute_stock_explorer_kpis(company_data)
-
-stock_explorer(stock_data, stock_explorer_kpis)
-
+render_stock_explorer()

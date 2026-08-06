@@ -1,8 +1,8 @@
 # 📈 Stock Analytics & Financial Intelligence Platform
 
-An interactive stock analytics system for historical price analysis, performance evaluation, risk measurement, statistical exploration, and automated financial reporting.
+An end-to-end stock analytics platform that transforms historical market data into financial insights through ETL processing, quantitative analysis, interactive visualization, and automated reporting.
 
-The system transforms daily market data into structured insights through an end-to-end pipeline including data ingestion, database storage, financial calculations, visualization, and PDF report generation.
+The system supports exploratory financial analysis by combining market data management, financial metrics, risk analysis, statistical exploration, and PDF report generation in a unified dashboard.
 
 ---
 
@@ -14,53 +14,9 @@ The dashboard is deployed and accessible online:
 
 ---
 
-## 🧭 Project Overview
-
-This platform is an end-to-end stock analytics application that integrates:
-
-* Historical market data management
-* Financial KPI calculation
-* Price trend analysis
-* Statistical return analysis
-* Risk and volatility analysis
-* Trending indicators analysis
-* Volume activity analysis
-* Interactive visualization
-* Automated PDF reporting
-
-It supports both investment research and exploratory financial analysis.
-
----
-
 ## 🏗️ System Architecture
 
-This system follows a layered analytical approach:
-
-```text
-Market Data
-   │
-   ▼
-Structured Database
-   │
-   ▼
-Financial Metrics
-   │
-   ▼
-Interactive Analytics
-   │
-   ▼
-Automated Reporting
-```
-
-It separates different analytical perspectives:
-
-* What happened (historical prices & performance)
-* How it behaved (risk & volatility)
-* What patterns exist (statistics & trends)
-
----
-
-## 🔄 Data Pipeline Architecture
+The application follows a layered architecture that transforms raw market data into analytical insights through ETL processing, database storage, quantitative analysis, visualization, and automated reporting.
 
 ```text
 Financial Market Data
@@ -78,27 +34,24 @@ PostgreSQL Database (Supabase)
 Selected Stock Dataset
         │
         ├── KPI Engine
-        │       ├── Ticker Metadata
         │       ├── Performance Metrics
         │       ├── Risk Metrics
-        │       └── Statistical Analysis
+        │       └── Ticker Metrics
         │
         ├── Visualization Layer
         │       ├── Candlestick Chart
-        │       ├── Cumulative Return 
-        │       ├── Return Analysis 
+        │       ├── Cumulative Return
+        │       ├── Return Analysis
         │       ├── Trend Indicators
         │       └── Volume Activity
         │
         ▼
 Streamlit Dashboard Layer
         │
-        ├── Interactive Report
-        ├── Charts
+        ├── Interactive Dashboard
         ├── Data Tables
-        └── PDF Export
+        └── PDF Reporting
 ```
-
 ---
 
 ## ✨ Key Features
@@ -106,54 +59,48 @@ Streamlit Dashboard Layer
 ### 📊 Historical Price Analysis
 
 * Interactive candlestick visualization
-* Daily OHLC price tracking
-* Trading volume analysis
-* Historical price exploration
+* OHLC price and volume tracking
+* Historical market exploration
 
 ### 📈 Performance Analysis
 
-* Total return calculation
-* Average daily return
-* Average trading volume
-* Trading day count
-* Highest and lowest closing price
+* Total and cumulative return calculation
+* Average daily return and trading volume
+* Trading period statistics
+* Highest and lowest closing prices
 
 ### 📐 Return Analysis
 
-* Cumulative return tracking
 * Daily return visualization
-* Return distribution histogram
+* Return distribution analysis
+* Cumulative performance tracking
 
 ### ⚠️ Risk Analysis
 
-* Daily volatility
-* Annualized volatility
-* Maximum drawdown
-* Best trading day
-* Worst trading day
+* Daily and annualized volatility
+* Maximum drawdown measurement
+* Best and worst trading days
 
 ### 📉 Trend Analysis
 
-* Long-term price trend visualization
+* Price trend visualization
 * Moving average indicators:
-  * 20-day moving average
-  * 50-day moving average
-
+  * MA20 short-term trend
+  * MA50 medium-term trend
 
 ### 📋 Statistical Exploration
 
-* Median closing price
-* Median daily return
-* Return skewness
-* Return kurtosis
-* Positive/negative trading day analysis
+* Central tendency analysis
+* Return distribution statistics
+* Skewness and kurtosis
+* Positive and negative trading day analysis
 
 ### 📄 Automated Reporting
 
-* Generates PDF financial reports
-* Includes KPI summaries
-* Embeds analytical charts
-* Supports downloadable reports
+* PDF financial report generation
+* KPI summaries
+* Embedded analytical charts
+* Downloadable reports
 
 ---
 
@@ -175,20 +122,21 @@ Streamlit Dashboard Layer
 
 ---
 
-## 🧹 Data Engineering Pipeline
+## 🧹 Data Engineering
 
-* Retrieves historical stock market data
+The data ingestion layer ensures reliable and consistent market data storage:
+
+* Retrieves historical OHLCV market data
 * Cleans and validates financial records
-* Stores structured OHLCV data
-* Prevents duplicate records using database constraints
-* Uses incremental synchronization logic
-* Maintains database consistency through primary keys
+* Performs incremental synchronization
+* Enforces database constraints for data integrity
+* Prevents duplicate records using composite primary keys
 
 ---
 
 ## 🗄️ Database Design
 
-The application uses PostgreSQL hosted on Supabase.
+The application uses PostgreSQL hosted on Supabase to store structured historical market data.
 
 Main table:
 
@@ -216,43 +164,36 @@ This prevents duplicate daily records for the same stock.
 
 ## 🧠 Analytical Methodology
 
-### Performance Metrics
+Financial metrics are derived from historical OHLCV data.
 
-* Return calculations are based on historical closing prices.
-* Daily returns are calculated using percentage change between trading days.
-
-### Risk Metrics
-
-* Volatility measures daily return dispersion.
-* Annualized volatility uses 252 trading days.
-* Maximum drawdown measures the largest historical decline from peak value.
-
-### Technical Indicators
-
-Moving averages are calculated using rolling windows:
-
-* MA20 → short-term trend
-* MA50 → medium-term trend
+* Returns are calculated from historical closing prices.
+* Volatility is measured from daily return variability and annualized using 252 trading days.
+* Maximum drawdown measures the largest decline from a historical peak.
+* Moving averages use rolling windows:
+  * MA20 for short-term trends
+  * MA50 for medium-term trends
 
 ---
 
 ## 📁 Project Structure
 
 ```text
-StreamlitStockAnalytics/
-├── assets/                    # dashboard screenshots
-├── components/                # dashboard UI components
-├── modules/                   # analytics & visualization modules
+StreamlitStockDashboard/
+├── assets/
+├── components/
+├── modules/
 │   ├── charts/
+│   ├── grids/
 │   ├── kpis/
 │   ├── reports/
 │   └── utils/
-├── pages/                     # Streamlit pages
-├── scripts/                   # batch jobs (backfill)
-├── src/                       # ETL + database layer
+├── pages/
+├── scripts/
+├── src/
 │   ├── db/
 │   └── etl/
-├── app.py                     # main Streamlit application
+├── app.py
+├── packages.txt
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -260,58 +201,33 @@ StreamlitStockAnalytics/
 
 ---
 
-## 📊 Design Philosophy
-
-This system follows a layered analytical approach:
-
-```text
-Raw Market Data
-      │
-      ▼
-Structured Financial Data
-      │
-      ▼
-Calculated Metrics
-      │
-      ▼
-Interactive Insights
-      │
-      ▼
-Financial Report
-```
-
-It separates analytical perspectives:
-
-* What happened (historical price movement)
-* How it performed (returns & KPIs)
-* How risky it was (volatility & drawdown)
-* What patterns exist (statistics & trends)
-
----
-
 ## 📸 Screenshots
 
 ### 📈 Stock Explorer
 
-Stock summary, company information, company KPIs, as well as candlestick chart and trading volume visualization.
+Historical price exploration with company overview, KPIs, and interactive charts.
 
-![Stock Explorer](assets/stock_explorer.png)
+![Stock Explorer](assets/stock_explorer1.png)
+![Stock Explorer](assets/stock_explorer2.png)
 
 
 ### 📊 Analytics Dashboard
 
 Performance, risk, trend, volume, and statistical analysis.
 
-![Analytics 1](assets/analytics_1.png)
-![Analytics 2](assets/analytics_2.png)
-![Analytics 3](assets/analytics_3.png)
+![Analytics 1](assets/analytics1.png)
+![Analytics 2](assets/analytics2.png)
+![Analytics 3](assets/analytics3.png)
+![Analytics 4](assets/analytics4.png)
+
 
 ### 📄 Financial Report
 
-Automatically generated analytical report.
+Generated PDF report containing financial summaries and analytical charts.
 
-![Report 1](assets/report_1.png)
-![Report 2](assets/report_2.png)
+![Report 1](assets/report1.png)
+![Report 2](assets/report2.png)
+![Report 3](assets/report3.png)
 ![PDF Report](assets/pdf_report.png)
 
 ---
@@ -335,7 +251,7 @@ DB_USER=
 DB_PASSWORD=
 DB_HOST=
 DB_PORT=6543
-DB_NAME=postgres
+DB_NAME=
 ```
 
 ### 3. Run Backfill (First-Time Setup)
@@ -355,10 +271,9 @@ streamlit run app.py
 
 ## ☁️ Deployment
 
-The application can be deployed using Streamlit Community Cloud.
+The application is deployed on Streamlit Community Cloud.
 
-Database credentials should be configured using Streamlit Secrets:
-
+Database credentials are configured through Streamlit Secrets:
 ```toml
 DB_USER="your_user"
 DB_PASSWORD="your_password"
@@ -366,8 +281,6 @@ DB_HOST="your_host"
 DB_PORT="6543"
 DB_NAME="postgres"
 ```
-
-Sensitive credentials should never be committed to GitHub.
 
 ---
 
@@ -383,10 +296,3 @@ Focus areas:
 * Financial analytics dashboards
 * Interactive data visualization
 * Time-series analysis
-
-
----
-
-## 🚀 Final Note
-
-This project demonstrates an end-to-end financial analytics system that integrates database engineering, quantitative analysis, interactive visualization, and automated reporting into a unified Streamlit application for exploring stock market behavior.

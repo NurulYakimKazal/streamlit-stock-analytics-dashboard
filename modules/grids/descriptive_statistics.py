@@ -1,25 +1,18 @@
 import pandas as pd
 
 
-def compute_descriptive_statistics(stock_df):
+REQUIRED_COLUMNS = ["close"]
 
-    required_columns = [
-        "close"
-    ]
+
+def prepare_descriptive_statistics_data(stock_df):
 
     missing_columns = [
-        col for col in required_columns
+        col for col in REQUIRED_COLUMNS
         if col not in stock_df.columns
     ]
 
-    if stock_df.empty:
-        return pd.DataFrame()
-
-    elif missing_columns:
-        return pd.DataFrame()
-
-    elif len(stock_df) < 2:
-        return pd.DataFrame()
+    if stock_df.empty or missing_columns or len(stock_df) < 2:
+        pd.DataFrame()
 
     # Reverse database order:
     # latest -> oldest becomes oldest -> latest
@@ -31,17 +24,19 @@ def compute_descriptive_statistics(stock_df):
         * 100
     )
 
+    # Remove rows where daily return cannot be calculated
     df = df.dropna(subset=["daily_return"])
 
+    # No valid return observations
     if df.empty:
         return pd.DataFrame()
 
     positive_days = (
-        df["daily_return"] > 0
+            df["daily_return"] > 0
     ).sum()
 
     negative_days = (
-        df["daily_return"] < 0
+            df["daily_return"] < 0
     ).sum()
 
     total_days = len(df)

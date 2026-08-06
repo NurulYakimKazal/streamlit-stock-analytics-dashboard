@@ -2,27 +2,27 @@ import numpy as np
 import pandas as pd
 
 
-def compute_risk_analysis_kpis(stock_df):
-    required_columns = ["close"]
+DEFAULT_VALUES = {
+    "volatility": "N/A",
+    "maximum_drawdown": "N/A",
+    "best_trading_day": "N/A",
+    "worst_trading_day": "N/A",
+    "annualized_volatility": "N/A",
+}
+
+
+REQUIRED_COLUMNS = ["close"]
+
+
+def prepare_risk_analysis_data(stock_df):
 
     missing_columns = [
-        col for col in required_columns
+        col for col in REQUIRED_COLUMNS
         if col not in stock_df.columns
     ]
 
-    default_values = {
-        "volatility": "N/A",
-        "maximum_drawdown": "N/A",
-        "best_trading_day": "N/A",
-        "worst_trading_day": "N/A",
-        "annualized_volatility": "N/A",
-    }
-
-    if stock_df.empty:
-        return default_values
-
-    elif missing_columns:
-        return default_values
+    if stock_df.empty or missing_columns:
+        return DEFAULT_VALUES
 
     # Reverse dataframe for chronological calculations
     df = stock_df.iloc[::-1].copy()
@@ -79,8 +79,19 @@ def compute_risk_analysis_kpis(stock_df):
 
     return {
         "volatility": volatility,
+        "annualized_volatility": annualized_volatility,
         "maximum_drawdown": maximum_drawdown,
         "best_trading_day": best_trading_day,
         "worst_trading_day": worst_trading_day,
-        "annualized_volatility": annualized_volatility,
+    }
+
+
+
+def prepare_risk_analysis_kpi_cards(risk_analysis_data):
+    return {
+        "Volatility": risk_analysis_data["volatility"],
+        "Annualized Volatility": risk_analysis_data["annualized_volatility"],
+        "Maximum Drawdown": risk_analysis_data["maximum_drawdown"],
+        "Best Trading Day": risk_analysis_data["best_trading_day"],
+        "Worst Tranding Day": risk_analysis_data["worst_trading_day"],
     }

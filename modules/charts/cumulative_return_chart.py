@@ -1,30 +1,28 @@
-import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
+from modules.charts.empty_graph import empty_chart
 
 
-def plot_cumulative_return(stock_df):
+REQUIRED_COLUMNS = ["date", "close"]
 
-    required_columns = ["date", "close"]
+
+def render_cumulative_return(stock_df):
 
     missing_columns = [
-        col for col in required_columns
+        col for col in REQUIRED_COLUMNS
         if col not in stock_df.columns
     ]
 
-    if missing_columns:
-        st.warning(
-            f"Missing stock data: {', '.join(missing_columns)}"
-        )
-        return
+    if stock_df.empty:
+        return empty_chart("No cumulative return data available")
+
+    elif missing_columns:
+        return empty_chart(f"Missing stock data: {', '.join(missing_columns)}")
 
     df = stock_df.copy()
 
     if len(df) < 2:
-        st.info(
-            "At least two trading days are required to plot cumulative return."
-        )
-        return
+        return empty_chart("At least two trading days are required to plot cumulative return.")
 
     df["date"] = pd.to_datetime(df["date"])
 
@@ -66,10 +64,20 @@ def plot_cumulative_return(stock_df):
     )
 
     fig.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
         xaxis_title="Date",
         yaxis_title="Return (%)",
         hovermode="x unified",
-        height=400,
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#374151",
+            font=dict(
+                color="#374151",
+                size=13,
+            ),
+        ),
+        height=450,
         margin=dict(
             t=20,
             l=20,
@@ -78,9 +86,21 @@ def plot_cumulative_return(stock_df):
         )
     )
 
-    st.plotly_chart(
-        fig,
-        width="stretch",
+    fig.update_xaxes(
+        title=dict(
+            standoff=20,
+        ),
+        showgrid=False
+    )
+
+    fig.update_yaxes(
+        title=dict(
+            standoff=15,
+        ),
+        showgrid=True,
+        gridcolor="rgba(255,255,255,0.07)",
+        gridwidth=1,
+        zeroline=False,
     )
 
     return fig
