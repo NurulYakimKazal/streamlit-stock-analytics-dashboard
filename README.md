@@ -136,9 +136,9 @@ The data ingestion layer ensures reliable and consistent market data storage:
 
 ## 🗄️ Database Design
 
-The application uses PostgreSQL hosted on Supabase to store structured historical market data.
+The application uses PostgreSQL hosted on Supabase to store structured market data and company information.
 
-Main table:
+### Stock Price Table
 
 ```text
 stock_prices
@@ -158,7 +158,27 @@ Primary key:
 (ticker, date)
 ```
 
-This prevents duplicate daily records for the same stock.
+This ensures each stock has only one record per trading day and prevents duplicate historical price entries.
+
+```text
+company_info
+
+ticker
+name
+sector
+industry
+market_cap
+trailing_pe
+dividend_yield
+beta
+updated_at
+```
+Primary key:
+
+```text
+ticker
+```
+This stores company profile information and financial attributes used in KPI summaries and stock analysis.
 
 ---
 
